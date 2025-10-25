@@ -34,6 +34,16 @@ export function Footer() {
 									GitHub
 								</a>
 							</li>
+							<li>
+								<a
+									href="https://github.com/DreamMaoMao/mangowc/wiki"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-muted-foreground text-sm transition-colors hover:text-accent"
+								>
+									Wiki
+								</a>
+							</li>
 						</ul>
 					</div>
 

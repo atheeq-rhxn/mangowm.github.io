@@ -29,6 +29,14 @@ export function Header() {
 					>
 						Features
 					</a>
+					<a
+						href="https://github.com/DreamMaoMao/mangowc/wiki"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-muted-foreground transition-colors hover:text-foreground"
+					>
+						Wiki
+					</a>
 				</nav>
 
 				<div className="flex items-center gap-4">

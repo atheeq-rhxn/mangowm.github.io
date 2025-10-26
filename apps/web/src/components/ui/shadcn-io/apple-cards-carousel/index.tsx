@@ -1,19 +1,27 @@
 "use client";
-import React, {
-	useEffect,
-	useRef,
-	useState,
-	createContext,
-	useContext,
-} from "react";
 import {
 	IconArrowNarrowLeft,
 	IconArrowNarrowRight,
 	IconX,
 } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
+import React, {
+	createContext,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { cn } from "@/lib/utils";
 
 export interface CarouselProps {
 	items: React.JSX.Element[];
@@ -99,7 +107,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 						className={cn(
 							"absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l",
 						)}
-					></div>
+					/>
 
 					<div
 						className={cn(
@@ -144,25 +152,35 @@ export type CardProps = {
 export const Card = ({ card, index, layout = false }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [hovered, setHovered] = useState(false);
+	const [isMobile, setIsMobile] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { onCardClose, currentIndex } = useContext(CarouselContext);
 
 	useEffect(() => {
-		function onKeyDown(event: KeyboardEvent) {
-			if (event.key === "Escape") {
-				handleClose();
+		setIsMobile(window.innerWidth < 768);
+		const handleResize = () => setIsMobile(window.innerWidth < 768);
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
+	useEffect(() => {
+		if (!isMobile) {
+			function onKeyDown(event: KeyboardEvent) {
+				if (event.key === "Escape") {
+					handleClose();
+				}
 			}
-		}
 
-		if (open) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "auto";
-		}
+			if (open) {
+				document.body.style.overflow = "hidden";
+			} else {
+				document.body.style.overflow = "auto";
+			}
 
-		window.addEventListener("keydown", onKeyDown);
-		return () => window.removeEventListener("keydown", onKeyDown);
-	}, [open]);
+			window.addEventListener("keydown", onKeyDown);
+			return () => window.removeEventListener("keydown", onKeyDown);
+		}
+	}, [open, isMobile]);
 
 	useOnClickOutside(containerRef as React.RefObject<HTMLElement>, () =>
 		handleClose(),
@@ -176,6 +194,76 @@ export const Card = ({ card, index, layout = false }: CardProps) => {
 		setOpen(false);
 		onCardClose(index);
 	};
+
+	if (isMobile) {
+		return (
+			<Drawer open={open} onOpenChange={setOpen}>
+				<DrawerTrigger asChild>
+					<motion.button
+						layoutId={layout ? `card-${card.title}` : undefined}
+						onMouseEnter={() => setHovered(true)}
+						onMouseLeave={() => setHovered(false)}
+						className="relative z-10 flex aspect-video w-full cursor-pointer flex-col items-start justify-start overflow-hidden rounded-3xl border-2 border-transparent bg-gray-100 hover:border-primary md:w-[28rem] dark:bg-neutral-900"
+					>
+						<video
+							src={card.src}
+							className="absolute inset-0 z-10 object-cover"
+							muted
+							loop
+							autoPlay
+							preload="metadata"
+						/>
+						<div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
+						<div className="relative z-40 p-4 md:p-6">
+							<motion.p
+								layoutId={layout ? `title-${card.title}` : undefined}
+								className="max-w-xs text-left font-sans font-semibold text-sm text-white [text-wrap:balance] md:text-lg"
+							>
+								{card.title}
+							</motion.p>
+						</div>
+						{hovered && (
+							<div className="absolute right-4 bottom-4 z-50">
+								<svg
+									className="h-6 w-6 text-white transition-transform hover:scale-110"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<title>Fullscreen</title>
+									<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+								</svg>
+							</div>
+						)}
+					</motion.button>
+				</DrawerTrigger>
+				<DrawerContent className="px-4 py-6 md:px-6 md:py-8">
+					<DrawerHeader className="pb-4">
+						<motion.p
+							layoutId={layout ? `category-${card.title}` : undefined}
+							className="font-medium text-base text-black dark:text-white"
+						>
+							{card.category}
+						</motion.p>
+						<DrawerTitle asChild>
+							<motion.p
+								layoutId={layout ? `title-${card.title}` : undefined}
+								className="mt-2 font-semibold text-2xl text-neutral-700 md:text-4xl dark:text-white"
+							>
+								{card.title}
+							</motion.p>
+						</DrawerTitle>
+					</DrawerHeader>
+					<div className="space-y-4">{card.content}</div>
+					<DrawerClose asChild>
+						<button className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white">
+							<IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
+						</button>
+					</DrawerClose>
+				</DrawerContent>
+			</Drawer>
+		);
+	}
 
 	return (
 		<>
@@ -204,13 +292,13 @@ export const Card = ({ card, index, layout = false }: CardProps) => {
 							</button>
 							<motion.p
 								layoutId={layout ? `category-${card.title}` : undefined}
-								className="text-base font-medium text-black dark:text-white"
+								className="font-medium text-base text-black dark:text-white"
 							>
 								{card.category}
 							</motion.p>
 							<motion.p
 								layoutId={layout ? `title-${card.title}` : undefined}
-								className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
+								className="mt-4 font-semibold text-2xl text-neutral-700 md:text-5xl dark:text-white"
 							>
 								{card.title}
 							</motion.p>
@@ -224,7 +312,7 @@ export const Card = ({ card, index, layout = false }: CardProps) => {
 				onClick={handleOpen}
 				onMouseEnter={() => setHovered(true)}
 				onMouseLeave={() => setHovered(false)}
-				className="relative z-10 flex aspect-video w-72 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 cursor-pointer border-2 border-transparent hover:border-primary md:w-[28rem] dark:bg-neutral-900"
+				className="relative z-10 flex aspect-video w-72 cursor-pointer flex-col items-start justify-start overflow-hidden rounded-3xl border-2 border-transparent bg-gray-100 hover:border-primary md:w-[28rem] dark:bg-neutral-900"
 			>
 				<video
 					src={card.src}
@@ -232,19 +320,19 @@ export const Card = ({ card, index, layout = false }: CardProps) => {
 					muted
 					loop
 					autoPlay
-					preload="none"
+					preload="metadata"
 				/>
 				<div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
 				<div className="relative z-40 p-4 md:p-6">
 					<motion.p
 						layoutId={layout ? `title-${card.title}` : undefined}
-						className="max-w-xs text-left font-sans text-sm font-semibold [text-wrap:balance] text-white md:text-lg"
+						className="max-w-xs text-left font-sans font-semibold text-sm text-white [text-wrap:balance] md:text-lg"
 					>
 						{card.title}
 					</motion.p>
 				</div>
 				{hovered && (
-					<div className="absolute bottom-4 right-4 z-50">
+					<div className="absolute right-4 bottom-4 z-50">
 						<svg
 							className="h-6 w-6 text-white transition-transform hover:scale-110"
 							fill="currentColor"

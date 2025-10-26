@@ -1,6 +1,11 @@
 "use client";
 
-import { Carousel, Card } from "@/components/ui/shadcn-io/apple-cards-carousel";
+import { useEffect, useState } from "react";
+import {
+	Card,
+	Carousel,
+	CarouselContext,
+} from "@/components/ui/shadcn-io/apple-cards-carousel";
 
 const features = [
 	{
@@ -16,6 +21,7 @@ const features = [
 				<video
 					src={process.env.NEXT_PUBLIC_MASTER_STACK_VIDEO!}
 					controls
+					preload="metadata"
 					className="w-full rounded-lg"
 				/>
 			</div>
@@ -33,6 +39,7 @@ const features = [
 				<video
 					src={process.env.NEXT_PUBLIC_SCROLLER_LAYOUT_VIDEO!}
 					controls
+					preload="metadata"
 					className="w-full rounded-lg"
 				/>
 			</div>
@@ -51,6 +58,7 @@ const features = [
 				<video
 					src={process.env.NEXT_PUBLIC_LAYER_ANIMATION_VIDEO!}
 					controls
+					preload="metadata"
 					className="w-full rounded-lg"
 				/>
 			</div>
@@ -59,6 +67,15 @@ const features = [
 ];
 
 export function Features() {
+	const [isDesktop, setIsDesktop] = useState(false);
+
+	useEffect(() => {
+		const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+		checkDesktop();
+		window.addEventListener("resize", checkDesktop);
+		return () => window.removeEventListener("resize", checkDesktop);
+	}, []);
+
 	return (
 		<section id="features" className="bg-background px-4 py-20 sm:px-6 lg:px-8">
 			<div className="mx-auto max-w-7xl">
@@ -72,11 +89,23 @@ export function Features() {
 					</p>
 				</div>
 
-				<Carousel
-					items={features.map((feature, index) => (
-						<Card key={feature.title} card={feature} index={index} layout />
-					))}
-				/>
+				{isDesktop ? (
+					<Carousel
+						items={features.map((feature, index) => (
+							<Card key={feature.title} card={feature} index={index} layout />
+						))}
+					/>
+				) : (
+					<CarouselContext.Provider
+						value={{ onCardClose: () => {}, currentIndex: 0 }}
+					>
+						<div className="grid grid-cols-1 gap-4">
+							{features.map((feature, index) => (
+								<Card key={feature.title} card={feature} index={index} layout />
+							))}
+						</div>
+					</CarouselContext.Provider>
+				)}
 			</div>
 		</section>
 	);

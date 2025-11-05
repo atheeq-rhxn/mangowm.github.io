@@ -72,12 +72,6 @@ export function Header() {
 						>
 							Home
 						</Link>
-						<a
-							href="#features"
-							className="text-muted-foreground transition-colors hover:text-foreground"
-						>
-							Features
-						</a>
 						<Link
 							href="/docs"
 							className="text-muted-foreground transition-colors hover:text-foreground"
@@ -162,13 +156,6 @@ export function Header() {
 						>
 							Home
 						</Link>
-						<a
-							href="#features"
-							className="block rounded-md px-3 py-2 text-foreground/70 transition-colors hover:text-foreground"
-							onClick={() => setIsMobileMenuOpen(false)}
-						>
-							Features
-						</a>
 						<Link
 							href="/docs"
 							className="block rounded-md px-3 py-2 text-foreground/70 transition-colors hover:text-foreground"

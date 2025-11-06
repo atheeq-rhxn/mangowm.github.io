@@ -1,4 +1,4 @@
-# 🍋 MangoWC Web
+# <img src="apps/web/public/favicon/favicon.svg" width="24" height="24" alt="Mango Logo" style="vertical-align: middle;"> MangoWC Web
 
 **MangoWC Web** is the website for **[MangoWC](https://github.com/DreamMaoMao/mangowc)** — a lightweight, high-performance Wayland compositor built on **dwl**.
 This site provides detailed documentation, configuration guides, and developer resources for both users and contributors.

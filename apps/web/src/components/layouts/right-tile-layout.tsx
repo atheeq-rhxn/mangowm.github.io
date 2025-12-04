@@ -87,8 +87,10 @@ export function RightTileLayout({ orientation }: RightTileLayoutProps) {
 			// Determine Focus
 			let focusedWindow = 1;
 			if (phase === 2) focusedWindow = 2;
-			else if (phase >= 3 && phase <= 5) focusedWindow = 3; // Keep focus on 3 during Swap & Return
-			else if (phase === 6) focusedWindow = 2; // Focus 2 when 3 leaves
+			else if (phase >= 3 && phase <= 5)
+				focusedWindow = 3; // Keep focus on 3 during Swap & Return
+			else if (phase === 6)
+				focusedWindow = 2; // Focus 2 when 3 leaves
 			else if (phase >= 7) focusedWindow = 1; // Focus 1 when 2 leaves
 
 			// Determine Active Windows Count
@@ -103,12 +105,14 @@ export function RightTileLayout({ orientation }: RightTileLayoutProps) {
 			const isSwap = phase === 4;
 
 			// --- Calculate Rects based on Orientation ---
-			
+
 			// Define standard positions (Normal State)
 			// Pos 0: Master (Right/Bottom)
 			// Pos 1: Stack 1 (Top/Left)
 			// Pos 2: Stack 2 (Bottom/Right of Stack area)
-			let pos0, pos1, pos2;
+			let pos0!: { x: number; y: number; w: number; h: number };
+			let pos1!: { x: number; y: number; w: number; h: number };
+			let pos2!: { x: number; y: number; w: number; h: number };
 
 			if (isVert) {
 				// Vertical: Master Bottom
@@ -148,19 +152,27 @@ export function RightTileLayout({ orientation }: RightTileLayoutProps) {
 			let target1 = pos0;
 			// Swap with Stack 2 (pos2)
 			if (isSwap && activeWindows === 3) target1 = pos2;
-			
+
 			set(
-				r1.current, target1?.x ?? 0, target1?.y ?? 0, target1?.w ?? 0, target1?.h ?? 0,
+				r1.current,
+				target1?.x ?? 0,
+				target1?.y ?? 0,
+				target1?.w ?? 0,
+				target1?.h ?? 0,
 				phase > 0 && phase < 8,
-				focusedWindow === 1
+				focusedWindow === 1,
 			);
 
 			// Window 2 (Stack 1)
 			let target2 = pos1;
 			set(
-				r2.current, target2?.x ?? 0, target2?.y ?? 0, target2?.w ?? 0, target2?.h ?? 0,
+				r2.current,
+				target2?.x ?? 0,
+				target2?.y ?? 0,
+				target2?.w ?? 0,
+				target2?.h ?? 0,
 				phase >= 2 && phase < 7,
-				focusedWindow === 2
+				focusedWindow === 2,
 			);
 
 			// Window 3 (Stack 2)
@@ -171,15 +183,19 @@ export function RightTileLayout({ orientation }: RightTileLayoutProps) {
 			// Pre-position for entry
 			if (activeWindows < 3) {
 				// Enter from Bottom-Right or appropriate corner
-				target3 = isVert 
+				target3 = isVert
 					? { x: v_rightX, y: 0, w: v_halfW, h: v_halfH }
 					: { x: 0, y: h_bottomY, w: h_halfW, h: h_halfH };
 			}
 
 			set(
-				r3.current, target3?.x ?? 0, target3?.y ?? 0, target3?.w ?? 0, target3?.h ?? 0,
+				r3.current,
+				target3?.x ?? 0,
+				target3?.y ?? 0,
+				target3?.w ?? 0,
+				target3?.h ?? 0,
 				phase >= 3 && phase < 6,
-				focusedWindow === 3
+				focusedWindow === 3,
 			);
 		};
 

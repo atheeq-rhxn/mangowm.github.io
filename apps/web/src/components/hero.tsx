@@ -10,7 +10,7 @@ export function Hero() {
 			<div className="grid-bg pointer-events-none absolute inset-0 bg-[size:3rem_3rem]" />
 
 			{/* Subtle gradient fade */}
-			<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background/90" />
+			<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-background/30 to-background/60" />
 
 			<div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center gap-14 lg:flex-row lg:items-center lg:gap-20">
 				{/* Left Column */}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -16,6 +16,7 @@ import { CenterTileLayout } from "./layouts/center-tile-layout";
 import { MonocleLayout } from "./layouts/monocle-layout";
 import { DeckLayout } from "./layouts/deck-layout";
 import { RightTileLayout } from "./layouts/right-tile-layout";
+import { TOTAL_DURATION } from "./layouts/constants";
 
 export function MangowcLayouts() {
 	const [activeLayout, setActiveLayout] = useState<
@@ -31,6 +32,8 @@ export function MangowcLayouts() {
 	const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
 		"horizontal",
 	);
+	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	const isOtherActive = !["tiling", "scroller", "grid"].includes(activeLayout);
 
@@ -42,13 +45,54 @@ export function MangowcLayouts() {
 
 	const dropdownLabel = isOtherActive ? formatLabel(activeLayout) : "Others";
 
+	// Auto-play logic
+	useEffect(() => {
+		if (isAutoPlaying) {
+			const layouts = ["tiling", "scroller", "grid"];
+
+			autoPlayTimerRef.current = setInterval(() => {
+				setActiveLayout((current: typeof activeLayout) => {
+					const currentIndex = layouts.indexOf(
+						current as "tiling" | "scroller" | "grid",
+					);
+					if (currentIndex === -1) return "tiling"; // Reset if not in main layouts
+					const nextIndex = (currentIndex + 1) % layouts.length;
+					return layouts[nextIndex] as "tiling" | "scroller" | "grid";
+				});
+				setOrientation("horizontal");
+			}, 2500); // Switch when third window spawns (phase 3 delay)
+		} else {
+			if (autoPlayTimerRef.current) {
+				clearInterval(autoPlayTimerRef.current);
+				autoPlayTimerRef.current = null;
+			}
+		}
+
+		return () => {
+			if (autoPlayTimerRef.current) {
+				clearInterval(autoPlayTimerRef.current);
+			}
+		};
+	}, [isAutoPlaying]);
+
+	// Handler functions
+	const handleLayoutChange = (layout: typeof activeLayout) => {
+		setActiveLayout(layout);
+		setIsAutoPlaying(false);
+	};
+
+	const handleOrientationChange = (newOrientation: typeof orientation) => {
+		setOrientation(newOrientation);
+		setIsAutoPlaying(false);
+	};
+
 	return (
 		<div className="mx-auto w-full max-w-4xl space-y-4 p-4">
 			<div className="flex flex-col items-end gap-2 sm:flex-row sm:justify-end">
 				<div className="inline-flex flex-wrap justify-end gap-1 rounded-2xl border border-border bg-muted p-1">
 					<button
 						type="button"
-						onClick={() => setActiveLayout("tiling")}
+						onClick={() => handleLayoutChange("tiling")}
 						className={cn(
 							"cursor-pointer rounded-full px-4 py-1.5 font-medium text-sm transition-all",
 							activeLayout === "tiling"
@@ -60,7 +104,7 @@ export function MangowcLayouts() {
 					</button>
 					<button
 						type="button"
-						onClick={() => setActiveLayout("scroller")}
+						onClick={() => handleLayoutChange("scroller")}
 						className={cn(
 							"cursor-pointer rounded-full px-4 py-1.5 font-medium text-sm transition-all",
 							activeLayout === "scroller"
@@ -72,7 +116,7 @@ export function MangowcLayouts() {
 					</button>
 					<button
 						type="button"
-						onClick={() => setActiveLayout("grid")}
+						onClick={() => handleLayoutChange("grid")}
 						className={cn(
 							"cursor-pointer rounded-full px-4 py-1.5 font-medium text-sm transition-all",
 							activeLayout === "grid"
@@ -100,7 +144,7 @@ export function MangowcLayouts() {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem
-								onClick={() => setActiveLayout("overview")}
+								onClick={() => handleLayoutChange("overview")}
 								className="cursor-pointer"
 							>
 								<span
@@ -109,6 +153,56 @@ export function MangowcLayouts() {
 									)}
 								>
 									Overview
+								</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleLayoutChange("deck")}
+								className="cursor-pointer"
+							>
+								<span
+									className={cn(
+										activeLayout === "deck" && "font-semibold text-primary",
+									)}
+								>
+									Deck
+								</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleLayoutChange("center-tile")}
+								className="cursor-pointer"
+							>
+								<span
+									className={cn(
+										activeLayout === "center-tile" &&
+											"font-semibold text-primary",
+									)}
+								>
+									Center Tile
+								</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleLayoutChange("right-tile")}
+								className="cursor-pointer"
+							>
+								<span
+									className={cn(
+										activeLayout === "right-tile" &&
+											"font-semibold text-primary",
+									)}
+								>
+									Right Tile
+								</span>
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleLayoutChange("monocle")}
+								className="cursor-pointer"
+							>
+								<span
+									className={cn(
+										activeLayout === "monocle" && "font-semibold text-primary",
+									)}
+								>
+									Monocle
 								</span>
 							</DropdownMenuItem>
 							<DropdownMenuItem
@@ -129,7 +223,8 @@ export function MangowcLayouts() {
 							>
 								<span
 									className={cn(
-										activeLayout === "center-tile" && "font-semibold text-primary",
+										activeLayout === "center-tile" &&
+											"font-semibold text-primary",
 									)}
 								>
 									Center Tile
@@ -141,7 +236,8 @@ export function MangowcLayouts() {
 							>
 								<span
 									className={cn(
-										activeLayout === "right-tile" && "font-semibold text-primary",
+										activeLayout === "right-tile" &&
+											"font-semibold text-primary",
 									)}
 								>
 									Right Tile
@@ -171,7 +267,7 @@ export function MangowcLayouts() {
 				>
 					<button
 						type="button"
-						onClick={() => setOrientation("horizontal")}
+						onClick={() => handleOrientationChange("horizontal")}
 						className={cn(
 							"cursor-pointer rounded-full px-4 py-1.5 font-medium text-sm transition-all",
 							orientation === "horizontal" && !isOtherActive
@@ -183,7 +279,7 @@ export function MangowcLayouts() {
 					</button>
 					<button
 						type="button"
-						onClick={() => setOrientation("vertical")}
+						onClick={() => handleOrientationChange("vertical")}
 						className={cn(
 							"cursor-pointer rounded-full px-4 py-1.5 font-medium text-sm transition-all",
 							orientation === "vertical" && !isOtherActive

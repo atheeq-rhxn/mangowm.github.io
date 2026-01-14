@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils";
 const SPONSOR_DATA = {
 	ADDRESS: "0xf9cda472f2556671d2504afc4c35340ec5615da1",
 	QR_SRC: "/sponsor-qr.png",
+	NETWORK: "BEP20 (BSC)",
+	NETWORK_FULL: "BNB Smart Chain (BEP20)",
 } as const;
 
 type CopyType = "address" | "qr";
@@ -36,18 +38,38 @@ export function SponsorButton() {
 		try {
 			if (type === "address") {
 				await navigator.clipboard.writeText(SPONSOR_DATA.ADDRESS);
+				setLastCopied(type);
+				toast.success("Address copied to clipboard!");
+				setTimeout(() => setLastCopied(null), 2000);
 			} else {
 				const res = await fetch(SPONSOR_DATA.QR_SRC);
+				if (!res.ok) throw new Error("Failed to fetch QR code");
+				
 				const blob = await res.blob();
-				await navigator.clipboard.write([
-					new ClipboardItem({ [blob.type]: blob }),
-				]);
+				
+				// Check if clipboard supports image writing
+				if (navigator.clipboard && ClipboardItem) {
+					await navigator.clipboard.write([
+						new ClipboardItem({ [blob.type]: blob }),
+					]);
+					setLastCopied(type);
+					toast.success("QR Code copied to clipboard!");
+					setTimeout(() => setLastCopied(null), 2000);
+				} else {
+					// Fallback: download the image
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = url;
+					link.download = 'sponsor-qr.png';
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					URL.revokeObjectURL(url);
+					toast.success("QR Code downloaded!");
+				}
 			}
-
-			setLastCopied(type);
-			toast.success(`${type === "address" ? "Address" : "QR Code"} copied!`);
-			setTimeout(() => setLastCopied(null), 2000);
 		} catch (err) {
+			console.error("Copy failed:", err);
 			toast.error("Failed to copy. Please try manually.");
 		}
 	}, []);
@@ -59,9 +81,9 @@ export function SponsorButton() {
 					variant="ghost"
 					size="sm"
 					aria-label="Sponsor MangoWC"
-					className="flex items-center gap-2 bg-red-50 text-red-600 transition-all transition-colors hover:bg-red-100 hover:text-red-700 active:scale-95 sm:px-4 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300"
+					className="group flex items-center gap-2 bg-red-50 text-red-600 transition-all hover:bg-red-100 hover:text-red-700 active:scale-95 sm:px-4 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300"
 				>
-					<Heart className="h-4 w-4 fill-current transition-colors" />
+					<Heart className="h-4 w-4 fill-current transition-transform group-hover:scale-110" />
 					<span className="hidden font-semibold sm:inline">Sponsor</span>
 				</Button>
 			</DialogTrigger>
@@ -83,6 +105,7 @@ export function SponsorButton() {
 						<div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4">
 							<button
 								onClick={() => handleCopy("qr")}
+								aria-label="Copy QR Code"
 								className={cn(
 									"group relative aspect-square w-full max-w-[140px] overflow-hidden rounded-2xl border-2 bg-muted/20 p-2 shadow-sm transition-all active:scale-95 sm:max-w-[200px]",
 									lastCopied === "qr"
@@ -122,15 +145,24 @@ export function SponsorButton() {
 								<div className="flex items-center justify-between px-1">
 									<label className="flex items-center gap-1.5 font-bold text-[10px] text-muted-foreground uppercase tracking-wider sm:text-xs">
 										<Wallet className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-										Network
+										Wallet Address
 									</label>
 									<span className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 font-bold text-[9px] text-primary sm:px-2.5 sm:py-1 sm:text-[10px]">
-										BEP20 (BSC)
+										{SPONSOR_DATA.NETWORK}
 									</span>
 								</div>
 
 								<div
 									onClick={() => handleCopy("address")}
+									onKeyDown={(e) => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											e.preventDefault();
+											handleCopy("address");
+										}
+									}}
+									role="button"
+									tabIndex={0}
+									aria-label="Copy wallet address"
 									className={cn(
 										"group flex cursor-pointer items-center justify-between rounded-xl border-2 bg-card/50 p-2.5 transition-all hover:bg-card active:scale-[0.99] sm:p-3.5",
 										lastCopied === "address"
@@ -138,7 +170,7 @@ export function SponsorButton() {
 											: "border-border/50 hover:border-primary/50",
 									)}
 								>
-									<code className="flex-1 truncate pr-3 font-mono font-semibold text-[10px] text-foreground sm:pr-4 sm:text-xs">
+									<code className="flex-1 break-all pr-3 font-mono font-semibold text-[10px] text-foreground sm:pr-4 sm:text-xs" title={SPONSOR_DATA.ADDRESS}>
 										{SPONSOR_DATA.ADDRESS}
 									</code>
 									<div

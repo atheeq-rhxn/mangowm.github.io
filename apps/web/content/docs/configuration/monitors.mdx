@@ -56,15 +56,46 @@ monitorrule=HDMI-A-1,0.55,1,tile,0,1,1920,0,2560,1440,144
 
 Tearing allows games to bypass the compositor's VSync for lower latency.
 
-1.  **Enable Globally:**
-    ```ini
-    allow_tearing=1
-    ```
-2.  **Enable per Window:**
-    Use a window rule to force tearing for specific games.
-    ```ini
-    windowrule=force_tearing:1,title:Counter-Strike 2
-    ```
+| Setting | Default | Description |
+| :--- | :--- | :--- |
+| `allow_tearing` | `0` | Global tearing control: `0` (Disable), `1` (Enable), `2` (Fullscreen only). |
+
+### Configuration
+
+**Enable Globally:**
+```ini
+allow_tearing=1
+```
+
+**Enable per Window:**
+Use a window rule to force tearing for specific games.
+```ini
+windowrule=force_tearing:1,title:vkcube
+```
+
+### Tearing Behavior Matrix
+
+| `force_tearing` \ `allow_tearing` | DISABLED (0) | ENABLED (1) | FULLSCREEN_ONLY (2) |
+|-----------------------------------|---------------|-------------|----------------------|
+| **UNSPECIFIED** (0)               | Not Allowed | Follows tearing_hint | Only fullscreen follows tearing_hint |
+| **ENABLED** (1)                   | Not Allowed | Allowed | Only fullscreen allowed |
+| **DISABLED** (2)                  | Not Allowed | Not Allowed | Not Allowed |
+
+### Graphics Card Compatibility
+
+<Callout type="warn" title="Important">
+Some graphics cards require setting the `WLR_DRM_NO_ATOMIC` environment variable before mango starts to successfully enable tearing.
+</Callout>
+
+Add this to `/etc/environment` and reboot:
+```bash
+WLR_DRM_NO_ATOMIC=1
+```
+
+Or run mango with the environment variable:
+```bash
+WLR_DRM_NO_ATOMIC=1 mango
+```
 
 ## Power Management
 

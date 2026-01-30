@@ -1,4 +1,10 @@
 {
 	"title": "Configuration",
-	"pages": ["basics", "monitors", "input", "environment", "miscellaneous"]
+	"pages": [
+		"basics",
+		"monitors",
+		"input",
+		"xdg-portals",
+		"miscellaneous"
+	]
 }

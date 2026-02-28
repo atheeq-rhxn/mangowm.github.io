@@ -4,6 +4,7 @@ const withMDX = createMDX();
 
 const nextConfig = {
 	output: "export",
+	trailingSlash: true,
 	reactCompiler: false,
 	compress: true,
 	serverExternalPackages: ["@takumi-rs/image-response"],

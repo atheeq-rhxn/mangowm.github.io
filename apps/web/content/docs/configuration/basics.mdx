@@ -48,7 +48,20 @@ source=~/.config/mango/bind.conf
 
 # Relative paths work too
 source=./theme.conf
+
+# Optional: ignore if file doesn't exist (useful for shared configs)
+source-optional=~/.config/mango/optional.conf
 ```
+
+### Validate Configuration
+
+You can check your configuration for errors without starting MangoWC:
+
+```bash
+mango -p /path/to/config.conf
+```
+
+Use with `source-optional` for shared configs across different setups.
 
 ## Environment Variables
 

@@ -18,7 +18,10 @@ monitorrule=name:Values,Parameter:Values,Parameter:Values
 
 | Parameter | Type | Values | Description |
 |-----------|------|--------|-------------|
-| `name` | string | Any | Match by monitor name |
+| `name` | string | Any | Match by monitor name (supports regex) |
+| `make` | string | Any | Match by monitor manufacturer |
+| `model` | string | Any | Match by monitor model |
+| `serial` | string | Any | Match by monitor serial number |
 | `width` | integer | 0-9999 | Monitor width |
 | `height` | integer | 0-9999 | Monitor height |
 | `refresh` | float | 0.001-9999.0 | Monitor refresh rate |

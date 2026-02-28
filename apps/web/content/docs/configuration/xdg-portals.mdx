@@ -5,6 +5,17 @@ description: Set up screen sharing, clipboard, keyring, and file pickers using X
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
+## Portal Configuration
+
+You can customize portal settings via the following paths:
+
+- **User Configuration (Priority):** `~/.config/xdg-desktop-portal/mango-portals.conf`
+- **System Fallback:** `/usr/share/xdg-desktop-portal/mango-portals.conf`
+
+<Callout type="warning">
+If you previously added `dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots` to your config, remove it. Mango now handles this automatically.
+</Callout>
+
 ## Screen Sharing
 
 To enable screen sharing (OBS, Discord, WebRTC), you need `xdg-desktop-portal-wlr`.
@@ -17,31 +28,8 @@ To enable screen sharing (OBS, Discord, WebRTC), you need `xdg-desktop-portal-wl
 
 </Step>
 <Step>
-  **Update Autostart**
-
-  Add this to your `autostart.sh` or `exec-once` config to ensure dbus knows about the environment.
-
-  **Environment Variables:**
-```bash
-dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots
-```
-
-**Portal Service:**
-
-<Callout type="warning">
-The portal service line is not necessary. It only avoids situations where the service may not start automatically.
-</Callout>
-
-```bash
-# The path may be /usr/lib/ or /usr/libexec/ depending on distribution
-/usr/lib/xdg-desktop-portal-wlr
-```
+  Restart your computer to apply changes.
 </Step>
-
-<Step>
-After configuration, restart your computer once to apply all changes properly.
-</Step>
-
 </Steps>
 
 ### Known Issues

@@ -1,25 +1,17 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import Image from "next/image";
 
-const logo = (
-	<Image
-		alt="MangoWC"
-		src="/logo-32x32.webp"
-		width={32}
-		height={32}
-		className="size-5"
-	/>
-);
+// fill this with your actual GitHub info, for example:
+export const gitConfig = {
+  user: "fuma-nama",
+  repo: "fumadocs",
+  branch: "main",
+};
 
 export function baseOptions(): BaseLayoutProps {
-	return {
-		nav: {
-			title: (
-				<>
-					{logo}
-					<span className="font-medium max-md:hidden">MangoWC</span>
-				</>
-			),
-		},
-	};
+  return {
+    nav: {
+      title: "Tanstack Start",
+    },
+    githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
+  };
 }

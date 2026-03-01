@@ -1,73 +1,42 @@
-# <img src="apps/web/public/favicon/favicon.svg" width="24" height="24" alt="mango Logo" style="vertical-align: middle;"> mango website
+# mangowm.github.io
 
-# GITHUB
+This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack.
 
-This is the website for **[mango](https://github.com/mangowm/mango)** — a lightweight, high-performance Wayland compositor built on **dwl**.
-This site provides detailed documentation, configuration guides, and developer resources for both users and contributors.
+## Features
 
----
+- **TypeScript** - For type safety and improved developer experience
+- **Oxlint** - Oxlint + Oxfmt (linting & formatting)
+- **Turborepo** - Optimized monorepo build system
 
-## ⚙️ Installation
+## Getting Started
 
-> **Note:** This project uses [**Bun**](https://bun.com/) as the preferred package manager for its speed and modern features.
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/mangowm/mango-web.git
-cd mango-web
-```
-
-### 2. Install dependencies
+First, install the dependencies:
 
 ```bash
 bun install
 ```
 
----
-
-## 🚀 Development
-
-### Start the development server
+Then, run the development server:
 
 ```bash
 bun run dev
 ```
 
-Once running, open [http://localhost:3001](http://localhost:3001) in your browser.
+## Git Hooks and Formatting
 
----
+- Format and lint fix: `bun run check`
 
-## 🧰 Available Scripts
-
-| Command               | Description                                |
-| --------------------- | ------------------------------------------ |
-| `bun run dev`         | Start the local development server         |
-| `bun run build`       | Build the site for production              |
-| `bun run check`       | Run linting and formatting using **Biome** |
-| `bun run check-types` | Perform TypeScript type checking           |
-
----
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```
-mango-web/
-├── docs/                     # Markdown/MDX documentation content
+mangowm.github.io/
 ├── apps/
-│   └── web/                  # Main Next.js application
-│       ├── src/
-│       │   ├── app/          # Next.js App Router pages
-│       │   ├── components/   # Shared UI components
-│       │   └── lib/          # Configurations & utilities
-│       └── public/           # Static assets
-└── turbo.json                # Turborepo configuration
 ```
 
----
+## Available Scripts
 
-## 🌐 Links
-
-* **Core Project:** [mangowm/mango](https://github.com/mangowm/mango)
-* **Project Wiki:** [mangowm/mango](https://github.com/mangowm/mango/wiki)
-* **Live Site:** [https://mangowm.github.io](https://mangowm.github.io)
+- `bun run dev`: Start all applications in development mode
+- `bun run build`: Build all applications
+- `bun run dev:web`: Start only the web application
+- `bun run check-types`: Check TypeScript types across all apps
+- `bun run check`: Run Oxlint and Oxfmt

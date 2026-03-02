@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install MangoWC on Arch, Fedora, Gentoo, Guix System, NixOS, PikaOS, or build from source.
+description: Install mangowm on Arch, Fedora, Gentoo, Guix System, NixOS, PikaOS, or build from source.
 ---
 
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
@@ -10,7 +10,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
 ## Prerequisites
 
-Regardless of your installation method, MangoWC requires a Wayland-capable environment. If you are building from source, ensure you have the following dependencies:
+Regardless of your installation method, mangowm requires a Wayland-capable environment. If you are building from source, ensure you have the following dependencies:
 
 <Callout type="info" title="Build Dependencies">
 - `glibc`
@@ -39,12 +39,12 @@ Choose your distribution below for specific installation instructions.
 <Tabs items={['Arch Linux', 'Fedora', 'Gentoo', 'Guix System', 'NixOS', 'PikaOS', 'Manual Build']}>
 
 <Tab value="Arch Linux">
-  MangoWC is available in the **Arch User Repository (AUR)**.
+  mangowm is available in the **Arch User Repository (AUR)**.
 
   You can install it using an AUR helper like `yay` or `paru`:
 
   ```bash
-  yay -S mangowc-git
+  yay -S mangowm-git
   ```
 
 <Callout type="tip">
@@ -89,7 +89,7 @@ Add the required packages to your `package.accept_keywords` file:
 - `gui-wm/mangowc`
 </Step>
 <Step>
-**Install MangoWC**
+**Install mango**
 ```bash
 emerge --ask --verbose gui-wm/mangowc
 ```
@@ -106,7 +106,7 @@ The package definition is described in the source repository.
 Add to `$HOME/.config/guix/channels.scm`:
 ```scheme
 (cons (channel
-        (name 'mangowc)
+        (name 'mangowm)
         (url "https://github.com/mangowm/mango.git")
         (branch "main"))
       %default-channels)
@@ -114,17 +114,17 @@ Add to `$HOME/.config/guix/channels.scm`:
 </Step>
 <Step>
 **Install**
-After running `guix pull`, you can install MangoWC:
+After running `guix pull`, you can install mangowm:
 ```bash
-guix install mangowc
+guix install mangowm
 ```
 
-Or add it to your system configuration using the mangowc module:
+Or add it to your system configuration using the mangowm module:
 ```scheme
-(use-modules (mangowc))
+(use-modules (mangowm))
 
 (packages (cons*
-            mangowc-git
+            mangowm-git
             ... ;; Other packages
             %base-packages))
 ```
@@ -148,7 +148,7 @@ The repository provides a Flake with a NixOS module.
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    mangowc = {
+    mangowm = {
       url = "github:mangowm/mango";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -167,7 +167,7 @@ The repository provides a Flake with a NixOS module.
 # configuration.nix (or any other file that you import)
 {inputs, ...}: {
   imports = [
-    inputs.mangowc.nixosModules.default
+    inputs.mangowm.nixosModules.default
     # .. other imports ...
   ];
 
@@ -183,13 +183,13 @@ The repository provides a Flake with a NixOS module.
 {
   # ...
 
-  outputs = { self, nixpkgs, mangowc, ...}@inputs: let  # <- if `mangowc` is not added here you may refer to it using `inputs.mangowc`
+  outputs = { self, nixpkgs, mangowm, ...}@inputs: let  # <- if `mangowm` is not added here you may refer to it using `inputs.mangowm`
     inherit (nixpkgs) lib;
     # ...
   in {
     nixosConfigurations.YourHostName = lib.nixosSystem {
       modules = [
-        mangowc.nixosModules.default # or inputs.mangowc.nixosModules.default
+        mangowm.nixosModules.default # or inputs.mangowm.nixosModules.default
         # other imports ...
       ];
     };
@@ -220,7 +220,7 @@ The repository provides a Flake with a NixOS module.
 </Tab>
 
 <Tab value="PikaOS">
-MangoWC is available in the **PikaOS package repository**.
+mangowm is available in the **PikaOS package repository**.
 
 You can install it using the `pikman` package manager:
 
@@ -230,7 +230,7 @@ pikman install mangowc
 </Tab>
 
 <Tab value="Manual Build">
-If your distribution isn't listed, you can build MangoWC from source. You will need to build `wlroots` and `scenefx` manually as well.
+If your distribution isn't listed, you can build mangowm from source. You will need to build `wlroots` and `scenefx` manually as well.
 
 <Steps>
 <Step>
@@ -254,11 +254,11 @@ sudo ninja -C build install
 ```
 </Step>
 <Step>
-**Build MangoWC**
+**Build mangowm**
 Finally, compile the compositor itself.
 ```bash
 git clone https://github.com/mangowm/mango.git
-cd mangowc
+cd mango
 meson build -Dprefix=/usr
 sudo ninja -C build install
 ```

@@ -18,7 +18,7 @@ import { ScrollerLayout } from "./layouts/scroller-layout";
 import { TgmixLayout } from "./layouts/tgmix-layout";
 import { TileLayout } from "./layouts/tile-layout";
 
-export function MangowcLayouts() {
+export function mangoLayouts() {
 	const [activeLayout, setActiveLayout] = useState<
 		| "tiling"
 		| "scroller"
